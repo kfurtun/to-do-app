@@ -17,23 +17,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 import { Drawer, DrawerHeader } from './Sidebar.styles';
-import { linkList, favoritesList, projectsList } from './utils';
+import { linkList, favoritesList } from './utils';
 import ListItem from './ListItem';
 import useSignOut from '@/app/hooks/useSignOut';
 import useZustandStore from '@/app/lib/zustand/useZustandStore';
 
-// TODO add api route
-const pathsToHide = ['/login', '/signup', '/api/graphql'];
-
 const Sidebar = () => {
-  const pathname = usePathname();
-  if (pathsToHide.includes(pathname)) {
-    return null;
-  }
-
   const { setIsAddTaskOpen } = useZustandStore();
   const { isSidebarOpen, setIsSidebarOpen } = useZustandStore();
   const theme = useTheme();

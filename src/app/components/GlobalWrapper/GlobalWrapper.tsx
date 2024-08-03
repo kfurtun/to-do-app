@@ -4,16 +4,21 @@ import React, { ReactNode } from 'react';
 import { Main, Box } from './GlobalWrapper.styles';
 import useZustandStore from '@/app/lib/zustand/useZustandStore';
 import Sidebar from '../Sidebar';
+import { usePathname } from 'next/navigation';
 
 interface GlobalWrapperProps {
   children: ReactNode;
 }
 
+// TODO add api route
+const pathsToHide = ['/login', '/signup', '/api/graphql'];
+
 const GlobalWrapper = ({ children }: GlobalWrapperProps) => {
   const { isSidebarOpen } = useZustandStore();
+  const pathname = usePathname();
   return (
     <Box sx={{ display: 'block' }}>
-      <Sidebar />
+      {!pathsToHide.includes(pathname) && <Sidebar />}
       <Box
         sx={{
           display: 'flex',
