@@ -25,9 +25,12 @@ export interface MyContext {
   };
 }
 
-const typeDefs = readFileSync('./src/app/api/graphql/schema.graphql', {
-  encoding: 'utf-8',
-});
+const typeDefs = readFileSync(
+  process.cwd() + '/src/app/api/graphql/schema.graphql',
+  {
+    encoding: 'utf-8',
+  }
+);
 
 const server = new ApolloServer({
   typeDefs,
