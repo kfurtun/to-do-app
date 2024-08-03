@@ -25,7 +25,7 @@ export interface MyContext {
   };
 }
 
-const typeDefs = readFileSync('src/app/api/graphql/schema.graphql', {
+const typeDefs = readFileSync('./src/app/api/graphql/schema.graphql', {
   encoding: 'utf-8',
 });
 
