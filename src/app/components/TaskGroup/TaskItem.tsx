@@ -4,12 +4,16 @@ import CheckIcon from '@mui/icons-material/Check';
 import { type Task } from '@/app/api/graphql/(generatedTypes)/resolversTypes';
 import { TaskButton } from './TaskGroup.styles';
 import DateRange from '@mui/icons-material/DateRange';
-import { showDate } from '@/app/components/TaskModalTemplate/utils';
+import {
+  getRefetchQuery,
+  showDate,
+} from '@/app/components/TaskModalTemplate/utils';
 import dayjs from 'dayjs';
 import WarningModal from '@/app/components/WarningModal/WarningModal';
 import EditModal from '@/app/components/EditModal';
 import { useMutation } from '@apollo/client';
-import { GET_TASKS, UPDATE_TASK } from '@/app/lib/apolloClient';
+import { UPDATE_TASK } from '@/app/lib/apolloClient';
+import { usePathname } from 'next/navigation';
 
 interface TaskItemProps {
   task: Task;
@@ -26,16 +30,19 @@ const TaskItem = ({
 }: TaskItemProps) => {
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const pathname = usePathname();
+  const refetchQueries = getRefetchQuery(pathname);
 
   const [updateTask, { loading: updateLaoding, error: updateError }] =
     useMutation(UPDATE_TASK, {
-      refetchQueries: [GET_TASKS],
+      refetchQueries: [refetchQueries],
     });
 
   const onConfirmCompeleteClick = async () => {
-    const result = await updateTask({
+    await updateTask({
       variables: { updatedTask: { _id: task._id, isCompleted: true } },
     });
+    setIsWarningModalOpen(false);
   };
 
   return (

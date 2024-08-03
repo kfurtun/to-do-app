@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar as MuiCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { MonthCalendar as MuiCalendar } from '@mui/x-date-pickers/MonthCalendar';
 import Popover from '@mui/material/Popover';
 import { Button, Stack } from '@mui/joy';
 import CalendarTodayOutlined from '@mui/icons-material/CalendarTodayOutlined';
-import { showDate } from './utils';
-import useZustandStore from '@/app/lib/zustand/useZustandStore';
 
-const DateButton = () => {
+import useZustandStore from '@/app/lib/zustand/useZustandStore';
+import dayjs from 'dayjs';
+import { useLazyQuery } from '@apollo/client';
+import { GET_TASKS_BY_DATE } from '@/app/lib/apolloClient';
+
+interface MonthButtonProps {
+  setSelectedWeek: (value: dayjs.Dayjs) => void;
+}
+
+const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
+  const [getTasksByDate] = useLazyQuery(GET_TASKS_BY_DATE);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const handleCalendarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const { selectedDate, setSelectedDate } = useZustandStore();
+  const { setSelectedMonthAndYear, selectedMonthAndYear } = useZustandStore();
 
   const handleCalendarClose = () => {
     setAnchorEl(null);
@@ -23,7 +31,7 @@ const DateButton = () => {
 
   const popoverId = openCalendar ? 'simple-popover' : undefined;
   return (
-    <Stack>
+    <Stack width="fit-content">
       <Button
         variant="solid"
         startDecorator={<CalendarTodayOutlined />}
@@ -31,7 +39,7 @@ const DateButton = () => {
         aria-describedby={popoverId}
         color="success"
       >
-        {showDate(selectedDate)}
+        {selectedMonthAndYear?.format('MMM YYYY')}
       </Button>
       <Popover
         id={popoverId}
@@ -45,9 +53,19 @@ const DateButton = () => {
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <MuiCalendar
-            value={selectedDate}
-            onChange={(newValue) => {
-              setSelectedDate(newValue);
+            value={selectedMonthAndYear}
+            onChange={async (newValue) => {
+              await getTasksByDate({
+                variables: {
+                  dates: {
+                    startDate: newValue.startOf('month').format('YYYY-MM-DD'),
+                    endDate: newValue.endOf('month').format('YYYY-MM-DD'),
+                    todayDate: dayjs().format('YYYY-MM-DD'),
+                  },
+                },
+              });
+              setSelectedWeek(newValue.startOf('week'));
+              setSelectedMonthAndYear(newValue.startOf('month'));
               setAnchorEl(null);
             }}
           />
@@ -57,4 +75,4 @@ const DateButton = () => {
   );
 };
 
-export default DateButton;
+export default MonthButton;

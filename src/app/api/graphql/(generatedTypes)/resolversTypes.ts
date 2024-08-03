@@ -17,6 +17,12 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Dates = {
+  endDate: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+  todayDate: Scalars['String']['input'];
+};
+
 export type InputTask = {
   date?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -51,6 +57,12 @@ export type MutationUpdateTaskArgs = {
 export type Query = {
   __typename?: 'Query';
   getTasks?: Maybe<Array<Maybe<Task>>>;
+  getTasksByDate?: Maybe<Array<Maybe<Task>>>;
+};
+
+
+export type QueryGetTasksByDateArgs = {
+  dates: Dates;
 };
 
 export type StatusResponse = {
@@ -152,6 +164,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Dates: Dates;
   InputTask: InputTask;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -164,6 +177,7 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  Dates: Dates;
   InputTask: InputTask;
   Mutation: {};
   Query: {};
@@ -181,6 +195,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getTasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType>;
+  getTasksByDate?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType, RequireFields<QueryGetTasksByDateArgs, 'dates'>>;
 }>;
 
 export type StatusResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['StatusResponse'] = ResolversParentTypes['StatusResponse']> = ResolversObject<{

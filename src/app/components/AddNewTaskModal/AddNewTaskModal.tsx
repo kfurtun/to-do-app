@@ -3,8 +3,8 @@
 import React from 'react';
 
 import useZustandStore from '@/app/lib/zustand/useZustandStore';
-import useSession from '@/app/hooks/useSession';
 import TaskModalTemplate from '../TaskModalTemplate';
+import { useSession } from '../Context/AuthContext';
 
 const AddNewTaskModal = () => {
   const { loading: sessionLoading } = useSession();

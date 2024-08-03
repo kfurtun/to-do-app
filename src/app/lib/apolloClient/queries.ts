@@ -13,3 +13,17 @@ export const GET_TASKS = gql`
     }
   }
 `;
+
+export const GET_TASKS_BY_DATE = gql`
+  query getTasksByDate($dates: Dates!) {
+    getTasksByDate(dates: $dates) {
+      _id
+      task
+      description
+      date
+      isCompleted
+      reminders
+      priority
+    }
+  }
+`;

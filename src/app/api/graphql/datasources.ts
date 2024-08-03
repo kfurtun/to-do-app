@@ -3,6 +3,7 @@ import {
   InputTask,
   StatusResponse,
   UpdatedTaskInput,
+  Dates,
 } from './(generatedTypes)/resolversTypes';
 import { ObjectId } from 'mongodb';
 import { dbName } from '@/app/utils/constants';
@@ -21,11 +22,40 @@ export class TaskQueries {
     }
     const db = await dbConnect();
 
-    // write Task type according to database
     const user = await db
       .db(dbName)
       .collection<Task>('tasks')
       .find({ userEmail: accessTokenPayload.email })
+      .toArray();
+
+    return user;
+  }
+
+  async getTasksByDate(dates: Dates): Promise<Task[] | null> {
+    const accessTokenPayload = await getTokenPayload(
+      'todoAT',
+      JWT_ACCESS_SECRET
+    );
+    if (!accessTokenPayload) {
+      return null;
+    }
+    const db = await dbConnect();
+
+    const user = await db
+      .db(dbName)
+      .collection<Task>('tasks')
+      .find({
+        $or: [
+          {
+            $and: [
+              { date: { $gte: dates.startDate } },
+              { date: { $lte: dates.endDate } },
+            ],
+          },
+          { date: { $lt: dates.todayDate } },
+        ],
+        userEmail: accessTokenPayload.email,
+      })
       .toArray();
 
     return user;
@@ -42,7 +72,7 @@ export class TaskMutations {
       return null;
     }
     const db = await dbConnect();
-    console.log(newTask, 'zaha');
+
     const result = await db
       .db(dbName)
       .collection('tasks')

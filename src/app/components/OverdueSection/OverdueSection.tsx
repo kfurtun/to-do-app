@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import AccordionGroup from '@mui/joy/AccordionGroup';
-import Accordion from '@mui/joy/Accordion';
-import AccordionDetails from '@mui/joy/AccordionDetails';
-import AccordionSummary from '@mui/joy/AccordionSummary';
+import React, { useState } from 'react';
+import {
+  Divider,
+  Stack,
+  Typography,
+  AccordionGroup,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+} from '@mui/joy';
 import { Task } from '@/app/api/graphql/(generatedTypes)/resolversTypes';
 import TaskGroup from '../TaskGroup';
-import { Divider } from '@mui/joy';
 
 interface OverdueSectionProps {
   data?: Task[];
@@ -33,7 +37,15 @@ const OverdueSection = ({ data }: OverdueSectionProps) => {
               '& button': { color: 'black' },
             }}
           >
-            Overdue
+            <Stack
+              flexDirection="row"
+              alignItems="center"
+              justifyContent="center"
+              gap={1}
+            >
+              Overdue{' '}
+              <Typography color="danger">({data?.length || 0})</Typography>
+            </Stack>
           </AccordionSummary>
           <Divider />
           <AccordionDetails>

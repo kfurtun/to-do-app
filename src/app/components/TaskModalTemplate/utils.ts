@@ -1,4 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
+import { GET_TASKS, GET_TASKS_BY_DATE } from '@/app/lib/apolloClient';
+import { type DocumentNode } from 'graphql';
 
 export const showDate = (date: Dayjs | null) => {
   console.log(dayjs(date).isSame(dayjs(), 'day'));
@@ -36,4 +38,15 @@ export const extractErrorCode = (log?: string): number | null => {
   }
 
   return null;
+};
+
+const refetchQueryList: { [key: string]: DocumentNode } = {
+  today: GET_TASKS,
+  upcoming: GET_TASKS_BY_DATE,
+};
+
+export const getRefetchQuery = (pathname: string) => {
+  const pathArr = pathname.split('/');
+  const path = pathArr[pathArr.length - 1];
+  return refetchQueryList[path];
 };

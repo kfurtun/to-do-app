@@ -1,6 +1,7 @@
 'use client';
 
 import React, { FormEvent, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   Box,
   Button,
@@ -10,25 +11,21 @@ import {
   FormControl,
   ModalDialog,
 } from '@mui/joy';
-import dayjs, { type Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { FlagOutlined, NotificationsOutlined } from '@mui/icons-material';
 import { useMutation } from '@apollo/client';
 import { redirect } from 'next/navigation';
 import DateButton from './DateButton';
-import {
-  GET_TASKS,
-  DELETE_TASK,
-  SAVE_TASK,
-  UPDATE_TASK,
-} from '@/app/lib/apolloClient';
-import useSession from '@/app/hooks/useSession';
-import { extractErrorCode } from './utils';
+import { DELETE_TASK, SAVE_TASK, UPDATE_TASK } from '@/app/lib/apolloClient';
+import { extractErrorCode, getRefetchQuery } from './utils';
 import {
   InputTask,
   Task,
   UpdatedTaskInput,
 } from '@/app/api/graphql/(generatedTypes)/resolversTypes';
 import WarningModal from '../WarningModal';
+import useZustandStore from '@/app/lib/zustand/useZustandStore';
+import { useSession } from '../Context/AuthContext';
 
 interface TaskModalTemplateProps {
   open: boolean;
@@ -46,12 +43,14 @@ const TaskModalTemplate = ({
   showWarningModal,
 }: TaskModalTemplateProps) => {
   const { loading: sessionLoading } = useSession();
+  const pathname = usePathname();
+  const refetchQueries = getRefetchQuery(pathname);
   const [clickedButton, setClickedButton] = useState<string | null>('');
+  const { selectedDate, setSelectedDate } = useZustandStore();
   const [variables, setVariables] = useState<
     InputTask | UpdatedTaskInput | null
   >(null);
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
-  const [dateValue, setDateValue] = useState<Dayjs | null>(dayjs());
   const [priority, setPriority] = useState<boolean>(
     fields?.priority === undefined ? false : fields.priority
   );
@@ -62,16 +61,16 @@ const TaskModalTemplate = ({
   const [saveTask, { loading: saveLoading, error: saveError }] = useMutation(
     SAVE_TASK,
     {
-      refetchQueries: [GET_TASKS],
+      refetchQueries: [refetchQueries],
     }
   );
   const [updateTask, { loading: updateLaoding, error: updateError }] =
     useMutation(UPDATE_TASK, {
-      refetchQueries: [GET_TASKS],
+      refetchQueries: [refetchQueries],
     });
   const [deleteTask, { loading: deleteLoading, error: deleteError }] =
     useMutation(DELETE_TASK, {
-      refetchQueries: [GET_TASKS],
+      refetchQueries: [refetchQueries],
     });
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -82,7 +81,7 @@ const TaskModalTemplate = ({
     const _variables = {
       task,
       description,
-      date: dateValue?.format('YYYY-MM-DD'),
+      date: selectedDate?.format('YYYY-MM-DD'),
       priority,
       reminders,
       isCompleted: false,
@@ -90,7 +89,6 @@ const TaskModalTemplate = ({
     };
 
     if (showWarningModal) {
-      console.log(event.nativeEvent instanceof SubmitEvent, 'zaa');
       //type guard of submitter
       if (!(event.nativeEvent instanceof SubmitEvent)) return;
       const submitter = event.nativeEvent.submitter;
@@ -113,7 +111,7 @@ const TaskModalTemplate = ({
   const onModalClose = () => {
     setPriority(false);
     setReminders(false);
-    setDateValue(dayjs());
+    setSelectedDate(dayjs());
     setIsWarningModalOpen(false);
     setOpen(false);
   };
@@ -236,7 +234,7 @@ const TaskModalTemplate = ({
               sx={{ display: 'flex', gap: 1, width: '100%', flexWrap: 'wrap' }}
             >
               <FormControl>
-                <DateButton dateValue={dateValue} setDateValue={setDateValue} />
+                <DateButton />
               </FormControl>
               <Button
                 variant={priority ? 'solid' : 'outlined'}
@@ -266,7 +264,10 @@ const TaskModalTemplate = ({
                 <Button
                   variant="outlined"
                   color="neutral"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    onModalClose();
+                    setOpen(false);
+                  }}
                   disabled={saveLoading || updateLaoding || deleteLoading}
                 >
                   Cancel

@@ -1,5 +1,6 @@
 type Query {
   getTasks: [Task]
+  getTasksByDate(dates: Dates!): [Task]
 }
 
 type Mutation {
@@ -35,6 +36,12 @@ input UpdatedTaskInput {
   priority: Boolean
   reminders: Boolean
   isCompleted: Boolean
+}
+
+input Dates {
+  startDate: String!
+  endDate: String!
+  todayDate: String!
 }
 
 type StatusResponse {

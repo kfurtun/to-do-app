@@ -14,9 +14,9 @@ import {
   JWT_ACCESS_SECRET,
   JWT_REFRESH_SECRET,
   JWT_ACCESS_DURATION,
+  JWT_ACCESS_DURATION_MS,
 } from '@/app/utils/constants';
 import { cookies } from 'next/headers';
-import { serializeCookie } from '../auth/validate/helpers';
 
 export interface MyContext {
   dataSources: {
@@ -60,10 +60,16 @@ const handler = startServerAndCreateNextHandler(server, {
             JWT_ACCESS_SECRET
           );
 
-          res.setHeader(
-            'Set-Cookie',
-            serializeCookie(newAccessToken, 'todoAT')
-          );
+          const cookie = cookies();
+          cookie.set({
+            name: 'todoAT',
+            value: newAccessToken,
+            httpOnly: true,
+            maxAge: parseFloat(JWT_ACCESS_DURATION_MS),
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+          });
         }
       }
       return {
@@ -91,14 +97,20 @@ const handler = startServerAndCreateNextHandler(server, {
       });
     }
 
-    return {
-      req,
-      res,
-      dataSources: {
-        taskQueries: new TaskQueries(),
-        taskMutations: new TaskMutations(),
+    throw new GraphQLError('Server error occured', {
+      extensions: {
+        code: 'SERVER_ERROR',
+        http: { status: 500 },
       },
-    };
+    });
+    // return {
+    //   req,
+    //   res,
+    //   dataSources: {
+    //     taskQueries: new TaskQueries(),
+    //     taskMutations: new TaskMutations(),
+    //   },
+    // };
   },
 });
 
