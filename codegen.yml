@@ -1,11 +1,3 @@
-# schema: http://localhost:8000/api/graphql
-# documents: './src/**/*.graphql'
-# generates:
-#   ./src/generated/graphql.ts:
-#     plugins:
-#       - typescript
-#       - typescript-operations
-#       - typescript-graphql-request
 schema: './src/app/api/graphql/schema.graphql'
 generates:
   # Specify where our generated types should live.
