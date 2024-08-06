@@ -35,7 +35,7 @@ const Login = () => {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
-    console.log(data, 'zaa');
+
     // todo -> save user session to redux
 
     if (response?.ok) {

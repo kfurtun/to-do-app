@@ -89,7 +89,6 @@ const TaskItem = ({
               alignItems: 'flex-start',
             }}
             onClick={() => {
-              console.log('zaa');
               setIsEditModalOpen(true);
             }}
           >

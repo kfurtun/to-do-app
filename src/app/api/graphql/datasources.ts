@@ -119,7 +119,7 @@ export class TaskMutations {
       return null;
     }
     const db = await dbConnect();
-    console.log(updatedTask, 'zaa');
+
     const result = await db
       .db(dbName)
       .collection('tasks')

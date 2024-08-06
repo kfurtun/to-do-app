@@ -5,6 +5,7 @@ import Providers from './components/Providers';
 import AddNewTaskModal from './components/AddNewTaskModal';
 import GlobalWrapper from './components/GlobalWrapper/GlobalWrapper';
 import { CssBaseline } from '@mui/joy';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <CssBaseline />
         <Providers>
+          <ScrollToTopButton />
           <AddNewTaskModal />
           <GlobalWrapper> {children}</GlobalWrapper>
         </Providers>
