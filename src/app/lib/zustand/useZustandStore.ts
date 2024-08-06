@@ -8,7 +8,7 @@ interface AppState {
   selectedDate: Dayjs | null;
   selectedMonthAndYear: Dayjs | null;
   setIsAddTaskOpen: (flag?: boolean) => void;
-  setIsSidebarOpen: () => void;
+  setIsSidebarOpen: (flag?: boolean) => void;
   setSelectedDate: (date: Dayjs | null) => void;
   setSelectedMonthAndYear: (date: Dayjs | null) => void;
 }
@@ -25,8 +25,10 @@ const actions = (set: any) => ({
     set((state: AppState) => ({
       isAddTaskOpen: flag === undefined ? !state.isAddTaskOpen : flag,
     })),
-  setIsSidebarOpen: () =>
-    set((state: AppState) => ({ isSidebarOpen: !state.isSidebarOpen })),
+  setIsSidebarOpen: (flag?: boolean) =>
+    set((state: AppState) => ({
+      isSidebarOpen: flag === undefined ? !state.isSidebarOpen : flag,
+    })),
   setSelectedDate: (date: Dayjs | null) => set({ selectedDate: date }),
   setSelectedMonthAndYear: (date: Dayjs | null) =>
     set({ selectedMonthAndYear: date }),

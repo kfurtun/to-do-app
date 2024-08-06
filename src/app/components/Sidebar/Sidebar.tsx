@@ -25,8 +25,8 @@ import useSignOut from '@/app/hooks/useSignOut';
 import useZustandStore from '@/app/lib/zustand/useZustandStore';
 
 const Sidebar = () => {
-  const { setIsAddTaskOpen } = useZustandStore();
-  const { isSidebarOpen, setIsSidebarOpen } = useZustandStore();
+  const { setIsAddTaskOpen, isSidebarOpen, setIsSidebarOpen } =
+    useZustandStore();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { signOutClick } = useSignOut();
@@ -63,7 +63,11 @@ const Sidebar = () => {
           <ListDivider />
           <List>
             {linkList.map((item) => (
-              <Link href={item.href} key={item.text}>
+              <Link
+                href={item.href}
+                key={item.text}
+                onClick={() => setIsSidebarOpen(false)}
+              >
                 <ListItem open={isSidebarOpen} text={item.text}>
                   {item.icon}
                 </ListItem>
