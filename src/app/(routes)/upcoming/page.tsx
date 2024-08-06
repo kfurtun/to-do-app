@@ -26,6 +26,7 @@ const Upcoming = () => {
         todayDate: dayjs().format('YYYY-MM-DD'),
       },
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const exractedData = data?.getTasksByDate;
