@@ -28,8 +28,8 @@ const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
   };
 
   const openCalendar = Boolean(anchorEl);
-
   const popoverId = openCalendar ? 'simple-popover' : undefined;
+
   return (
     <Stack width="fit-content">
       <Button
@@ -63,6 +63,7 @@ const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
                     todayDate: dayjs().format('YYYY-MM-DD'),
                   },
                 },
+                fetchPolicy: 'cache-and-network',
               });
               setSelectedWeek(newValue.startOf('week'));
               setSelectedMonthAndYear(newValue.startOf('month'));
