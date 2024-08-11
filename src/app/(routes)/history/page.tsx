@@ -72,6 +72,7 @@ const HistoryPage = () => {
               .map((task: Task, taskInd: number) => {
                 return (
                   <TaskItem
+                    key={taskInd}
                     task={task}
                     index={taskInd}
                     isClickable={false}
