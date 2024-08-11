@@ -26,7 +26,8 @@ export default function RootLayout({
         <Providers>
           <ScrollToTopButton />
           <AddNewTaskModal />
-          <GlobalWrapper> {children}</GlobalWrapper>
+          {/* <GlobalWrapper> {children}</GlobalWrapper> */}
+          {children}
         </Providers>
       </body>
     </html>

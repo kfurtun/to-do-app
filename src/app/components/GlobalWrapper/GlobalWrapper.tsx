@@ -10,15 +10,12 @@ interface GlobalWrapperProps {
   children: ReactNode;
 }
 
-// TODO add api route
-const pathsToHide = ['/login', '/signup', '/api/graphql'];
-
 const GlobalWrapper = ({ children }: GlobalWrapperProps) => {
   const { isSidebarOpen } = useZustandStore();
   const pathname = usePathname();
   return (
     <Box sx={{ display: 'block' }}>
-      {!pathsToHide.includes(pathname) && <Sidebar />}
+      <Sidebar />
       <Box
         sx={{
           display: 'flex',
