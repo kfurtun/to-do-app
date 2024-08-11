@@ -10,6 +10,9 @@ const queries: QueryResolvers = {
   getTasksByDate: async (_, { dates }, { dataSources }) => {
     return dataSources.taskQueries.getTasksByDate(dates);
   },
+  getCompletedTasks: async (_, { loadMoreVars }, { dataSources }) => {
+    return dataSources.taskQueries.getCompletedTasks(loadMoreVars);
+  },
 };
 
 export default queries;

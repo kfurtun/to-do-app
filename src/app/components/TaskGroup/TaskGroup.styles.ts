@@ -19,6 +19,10 @@ export const TaskButton = styled(Button)(({ theme }) => ({
     position: 'absolute',
     color: 'neutral',
   },
+  '& .check-icon-always': {
+    position: 'absolute',
+    color: 'green',
+  },
   '&:hover .check-icon': {
     display: 'block', // Show the icon on hover
   },

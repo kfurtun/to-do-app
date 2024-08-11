@@ -14,12 +14,15 @@ import EditModal from '@/app/components/EditModal';
 import { useMutation } from '@apollo/client';
 import { UPDATE_TASK } from '@/app/lib/apolloClient';
 import { usePathname } from 'next/navigation';
+import useZustandStore from '@/app/lib/zustand/useZustandStore';
 
 interface TaskItemProps {
   task: Task;
   index: number;
   dividerIndex?: 0;
   showOverdueDate?: boolean;
+  isClickable?: boolean;
+  optionalOverdueDate?: string;
 }
 
 const TaskItem = ({
@@ -27,11 +30,15 @@ const TaskItem = ({
   index,
   dividerIndex,
   showOverdueDate,
+  isClickable = true,
+  optionalOverdueDate,
 }: TaskItemProps) => {
   const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const { setHasTaskCompleted } = useZustandStore();
   const pathname = usePathname();
   const refetchQueries = getRefetchQuery(pathname);
+  const alwaysShowIcon = !isClickable;
 
   const [updateTask, { loading: updateLaoding, error: updateError }] =
     useMutation(UPDATE_TASK, {
@@ -40,8 +47,15 @@ const TaskItem = ({
 
   const onConfirmCompeleteClick = async () => {
     await updateTask({
-      variables: { updatedTask: { _id: task._id, isCompleted: true } },
+      variables: {
+        updatedTask: {
+          _id: task._id,
+          isCompleted: true,
+          completedOn: dayjs().format('YYYY-MM-DD'),
+        },
+      },
     });
+    setHasTaskCompleted(true);
     setIsWarningModalOpen(false);
   };
 
@@ -76,8 +90,11 @@ const TaskItem = ({
             onClick={() => setIsWarningModalOpen(true)}
             variant="outlined"
             color="neutral"
+            disabled={!isClickable}
           >
-            <CheckIcon className="check-icon" />
+            <CheckIcon
+              className={!alwaysShowIcon ? 'check-icon' : 'check-icon-always'}
+            />
           </TaskButton>
           <Button
             variant="plain"
@@ -91,6 +108,7 @@ const TaskItem = ({
             onClick={() => {
               setIsEditModalOpen(true);
             }}
+            disabled={!isClickable}
           >
             <Typography level="h4" sx={{ textAlign: 'left', fontSize: 14 }}>
               {task.task}
@@ -113,8 +131,10 @@ const TaskItem = ({
                 }}
                 color="danger"
               >
-                <DateRange fontSize="small" />
-                {showDate(dayjs(task.date))}
+                {!optionalOverdueDate && <DateRange fontSize="small" />}
+                {optionalOverdueDate
+                  ? `Completed on ${optionalOverdueDate}`
+                  : showDate(dayjs(task.date))}
               </Typography>
             )}
           </Button>

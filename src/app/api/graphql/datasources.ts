@@ -4,6 +4,8 @@ import {
   StatusResponse,
   UpdatedTaskInput,
   Dates,
+  CompletedTasks,
+  LoadMoreVars,
 } from './(generatedTypes)/resolversTypes';
 import { ObjectId } from 'mongodb';
 import { dbName } from '@/app/utils/constants';
@@ -22,13 +24,13 @@ export class TaskQueries {
     }
     const db = await dbConnect();
 
-    const user = await db
+    const tasks = await db
       .db(dbName)
       .collection<Task>('tasks')
       .find({ userEmail: accessTokenPayload.email })
       .toArray();
 
-    return user;
+    return tasks;
   }
 
   async getTasksByDate(dates: Dates): Promise<Task[] | null> {
@@ -41,7 +43,7 @@ export class TaskQueries {
     }
     const db = await dbConnect();
 
-    const user = await db
+    const tasks = await db
       .db(dbName)
       .collection<Task>('tasks')
       .find({
@@ -58,7 +60,41 @@ export class TaskQueries {
       })
       .toArray();
 
-    return user;
+    return tasks;
+  }
+
+  async getCompletedTasks(
+    loadMoreVars: LoadMoreVars
+  ): Promise<CompletedTasks | null> {
+    const accessTokenPayload = await getTokenPayload(
+      'todoAT',
+      JWT_ACCESS_SECRET
+    );
+    if (!accessTokenPayload) {
+      return null;
+    }
+    const db = await dbConnect();
+    const totalCount = await db.db(dbName).collection('tasks').countDocuments({
+      isCompleted: true,
+      userEmail: accessTokenPayload.email,
+    });
+
+    const tasks = await db
+      .db(dbName)
+      .collection<Task>('tasks')
+      .find({
+        isCompleted: true,
+        userEmail: accessTokenPayload.email,
+      })
+      .sort({ date: -1 })
+      .skip(loadMoreVars.skip)
+      .limit(loadMoreVars.limit)
+      .toArray();
+
+    const dates = new Set(tasks.map((task) => task.date));
+    const datesArray = Array.from(dates);
+
+    return { dates: datesArray, tasks, totalCount };
   }
 }
 
@@ -143,6 +179,9 @@ export class TaskMutations {
             }),
             ...(updatedTask.priority !== undefined && {
               priority: updatedTask.priority,
+            }),
+            ...(updatedTask.completedOn !== undefined && {
+              completedOn: updatedTask.completedOn,
             }),
           },
         }

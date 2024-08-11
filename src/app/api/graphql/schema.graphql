@@ -1,12 +1,19 @@
 type Query {
   getTasks: [Task]
   getTasksByDate(dates: Dates!): [Task]
+  getCompletedTasks(loadMoreVars: LoadMoreVars!): CompletedTasks
 }
 
 type Mutation {
   saveTask(newTask: InputTask!): StatusResponse
   deleteTask(id: String!): StatusResponse
   updateTask(updatedTask: UpdatedTaskInput!): StatusResponse
+}
+
+type CompletedTasks {
+  tasks: [Task]
+  dates: [String]
+  totalCount: Int!
 }
 
 type Task {
@@ -16,7 +23,12 @@ type Task {
   priority: Boolean!
   reminders: Boolean!
   isCompleted: Boolean!
+  completedOn: String
   _id: String!
+}
+
+type StatusResponse {
+  status: String!
 }
 
 input InputTask {
@@ -36,6 +48,7 @@ input UpdatedTaskInput {
   priority: Boolean
   reminders: Boolean
   isCompleted: Boolean
+  completedOn: String
 }
 
 input Dates {
@@ -44,6 +57,7 @@ input Dates {
   todayDate: String!
 }
 
-type StatusResponse {
-  status: String!
+input LoadMoreVars {
+  skip: Int!
+  limit: Int!
 }

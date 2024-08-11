@@ -17,6 +17,13 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CompletedTasks = {
+  __typename?: 'CompletedTasks';
+  dates?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  tasks?: Maybe<Array<Maybe<Task>>>;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type Dates = {
   endDate: Scalars['String']['input'];
   startDate: Scalars['String']['input'];
@@ -30,6 +37,11 @@ export type InputTask = {
   priority?: InputMaybe<Scalars['Boolean']['input']>;
   reminders?: InputMaybe<Scalars['Boolean']['input']>;
   task?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type LoadMoreVars = {
+  limit: Scalars['Int']['input'];
+  skip: Scalars['Int']['input'];
 };
 
 export type Mutation = {
@@ -56,8 +68,14 @@ export type MutationUpdateTaskArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getCompletedTasks?: Maybe<CompletedTasks>;
   getTasks?: Maybe<Array<Maybe<Task>>>;
   getTasksByDate?: Maybe<Array<Maybe<Task>>>;
+};
+
+
+export type QueryGetCompletedTasksArgs = {
+  loadMoreVars: LoadMoreVars;
 };
 
 
@@ -73,6 +91,7 @@ export type StatusResponse = {
 export type Task = {
   __typename?: 'Task';
   _id: Scalars['String']['output'];
+  completedOn?: Maybe<Scalars['String']['output']>;
   date: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   isCompleted: Scalars['Boolean']['output'];
@@ -83,6 +102,7 @@ export type Task = {
 
 export type UpdatedTaskInput = {
   _id: Scalars['String']['input'];
+  completedOn?: InputMaybe<Scalars['String']['input']>;
   date?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isCompleted?: InputMaybe<Scalars['Boolean']['input']>;
@@ -164,8 +184,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CompletedTasks: ResolverTypeWrapper<CompletedTasks>;
   Dates: Dates;
   InputTask: InputTask;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  LoadMoreVars: LoadMoreVars;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   StatusResponse: ResolverTypeWrapper<StatusResponse>;
@@ -177,14 +200,24 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  CompletedTasks: CompletedTasks;
   Dates: Dates;
   InputTask: InputTask;
+  Int: Scalars['Int']['output'];
+  LoadMoreVars: LoadMoreVars;
   Mutation: {};
   Query: {};
   StatusResponse: StatusResponse;
   String: Scalars['String']['output'];
   Task: Task;
   UpdatedTaskInput: UpdatedTaskInput;
+}>;
+
+export type CompletedTasksResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['CompletedTasks'] = ResolversParentTypes['CompletedTasks']> = ResolversObject<{
+  dates?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  tasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -194,6 +227,7 @@ export type MutationResolvers<ContextType = MyContext, ParentType extends Resolv
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  getCompletedTasks?: Resolver<Maybe<ResolversTypes['CompletedTasks']>, ParentType, ContextType, RequireFields<QueryGetCompletedTasksArgs, 'loadMoreVars'>>;
   getTasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType>;
   getTasksByDate?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType, RequireFields<QueryGetTasksByDateArgs, 'dates'>>;
 }>;
@@ -205,6 +239,7 @@ export type StatusResponseResolvers<ContextType = MyContext, ParentType extends 
 
 export type TaskResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = ResolversObject<{
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  completedOn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   isCompleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -215,6 +250,7 @@ export type TaskResolvers<ContextType = MyContext, ParentType extends ResolversP
 }>;
 
 export type Resolvers<ContextType = MyContext> = ResolversObject<{
+  CompletedTasks?: CompletedTasksResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   StatusResponse?: StatusResponseResolvers<ContextType>;

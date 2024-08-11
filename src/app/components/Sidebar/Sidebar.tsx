@@ -35,80 +35,79 @@ const Sidebar = () => {
     setIsSidebarOpen();
   };
   return (
-    <>
-      <Box sx={{ display: 'flex' }}>
-        <Drawer variant="permanent" open={isSidebarOpen}>
-          <DrawerHeader sx={{ justifyContent: 'space-between' }}>
-            <Typography
-              level="h4"
-              noWrap
-              component="div"
-              sx={{ px: isSidebarOpen ? 2.5 : 0 }}
-            >
-              {isSidebarOpen && 'Menu'}
-            </Typography>
-            <IconButton onClick={handleDrawer}>
-              {!isSidebarOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </DrawerHeader>
-          <ListDivider />
-          <ListItem
-            open={isSidebarOpen}
-            text="Add task"
-            isRoleDisabled={false}
-            onClick={() => setIsAddTaskOpen()}
+    <Box sx={{ display: 'flex' }}>
+      <Drawer variant="permanent" open={isSidebarOpen}>
+        <DrawerHeader sx={{ justifyContent: 'space-between' }}>
+          <Typography
+            level="h4"
+            noWrap
+            component="div"
+            sx={{ px: isSidebarOpen ? 2.5 : 0 }}
           >
-            <AddCircle />
-          </ListItem>
-          <ListDivider />
-          <List>
-            {linkList.map((item) => (
-              <Link
-                href={item.href}
-                key={item.text}
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <ListItem open={isSidebarOpen} text={item.text}>
-                  {item.icon}
-                </ListItem>
-              </Link>
-            ))}
-          </List>
-          <ListDivider />
-          <List>
-            {favoritesList.map((item) => (
-              <Link href={item.href} key={item.text}>
-                <ListItem open={isSidebarOpen} text={item.text}>
-                  {item.icon}
-                </ListItem>
-              </Link>
-            ))}
-          </List>
-          <List sx={{ marginTop: 'auto' }}>
-            <Link href="/settings">
-              <ListItem open={isSidebarOpen} text="Settings">
-                <SettingsApplicationsIcon />
+            {isSidebarOpen && 'Menu'}
+          </Typography>
+          <IconButton onClick={handleDrawer}>
+            {!isSidebarOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <ListDivider />
+        <ListItem
+          open={isSidebarOpen}
+          text="Add task"
+          isRoleDisabled={false}
+          onClick={() => setIsAddTaskOpen()}
+        >
+          <AddCircle />
+        </ListItem>
+        <ListDivider />
+        <List sx={{ flexGrow: 'unset' }}>
+          {linkList.map((item) => (
+            <Link
+              href={item.href}
+              key={item.text}
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <ListItem open={isSidebarOpen} text={item.text}>
+                {item.icon}
               </ListItem>
             </Link>
-            <ListItem
-              open={isSidebarOpen}
-              text="Sign out"
-              isRoleDisabled={false}
-              onClick={async () => await signOutClick()}
-            >
-              <LogoutIcon />
+          ))}
+        </List>
+        <ListDivider />
+        <List>
+          {favoritesList.map((item) => (
+            <Link href={item.href} key={item.text}>
+              <ListItem open={isSidebarOpen} text={item.text}>
+                {item.icon}
+              </ListItem>
+            </Link>
+          ))}
+        </List>
+        <ListDivider />
+        <List sx={{ marginTop: 'auto', flexGrow: 'unset' }}>
+          <Link href="/settings">
+            <ListItem open={isSidebarOpen} text="Settings">
+              <SettingsApplicationsIcon />
             </ListItem>
-          </List>
-        </Drawer>
-        {isMobile && (
-          <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          </Link>
+          <ListItem
             open={isSidebarOpen}
-            onClick={handleDrawer}
-          />
-        )}
-      </Box>
-    </>
+            text="Sign out"
+            isRoleDisabled={false}
+            onClick={async () => await signOutClick()}
+          >
+            <LogoutIcon />
+          </ListItem>
+        </List>
+      </Drawer>
+      {isMobile && (
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={isSidebarOpen}
+          onClick={handleDrawer}
+        />
+      )}
+    </Box>
   );
 };
 

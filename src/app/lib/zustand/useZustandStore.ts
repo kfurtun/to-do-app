@@ -7,10 +7,12 @@ interface AppState {
   isSidebarOpen: boolean;
   selectedDate: Dayjs | null;
   selectedMonthAndYear: Dayjs | null;
+  hasTaskCompleted: boolean;
   setIsAddTaskOpen: (flag?: boolean) => void;
   setIsSidebarOpen: (flag?: boolean) => void;
   setSelectedDate: (date: Dayjs | null) => void;
   setSelectedMonthAndYear: (date: Dayjs | null) => void;
+  setHasTaskCompleted: (flag: boolean) => void;
 }
 
 const initialState = {
@@ -18,6 +20,7 @@ const initialState = {
   isSidebarOpen: false,
   selectedDate: dayjs(),
   selectedMonthAndYear: dayjs(),
+  hasTaskCompleted: false,
 };
 
 const actions = (set: any) => ({
@@ -32,6 +35,7 @@ const actions = (set: any) => ({
   setSelectedDate: (date: Dayjs | null) => set({ selectedDate: date }),
   setSelectedMonthAndYear: (date: Dayjs | null) =>
     set({ selectedMonthAndYear: date }),
+  setHasTaskCompleted: (flag: boolean) => set({ hasTaskCompleted: flag }),
 });
 
 // Create the Zustand store
