@@ -112,7 +112,7 @@ const LoginPage = () => {
               {isLoading ? <CircularProgress size="sm" /> : 'Sign in'}
             </Button>
           </Box>
-          <Typography level="body2" sx={{ mt: 2, textAlign: 'center' }}>
+          <Typography level="body-sm" sx={{ mt: 2, textAlign: 'center' }}>
             Don’t have an account?{' '}
             <Link href="/signup" passHref legacyBehavior>
               <MUILink>Sign Up</MUILink>
