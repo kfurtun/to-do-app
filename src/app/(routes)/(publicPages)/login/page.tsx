@@ -2,20 +2,22 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuthCheck from '@/app/hooks/useAuthCheck';
-
-import Button from '@mui/joy/Button';
-import Typography from '@mui/joy/Typography';
-import Input from '@mui/joy/Input';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/joy/CircularProgress';
+import {
+  Box,
+  Button,
+  Link as MUILink,
+  Input,
+  Typography,
+  CircularProgress,
+} from '@mui/joy';
+import Link from 'next/link';
 
 const errorMessages = {
   401: { message: 'Your email/password is incorrect. Please try again!' },
   500: { message: 'Unexpected error happenned. Please try again!' },
 };
 
-const Login = () => {
+const LoginPage = () => {
   useAuthCheck();
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -23,7 +25,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -51,54 +53,75 @@ const Login = () => {
     }
   };
   return (
-    <Container maxWidth="sm">
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        bgcolor: 'background.level1',
+      }}
+    >
       <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="100vh"
-        marginTop="-2rem"
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          maxWidth: 400,
+          width: '100%',
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 'lg',
+          bgcolor: 'background.surface',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
       >
         <Typography level="h3" gutterBottom>
           To Do App
         </Typography>
-        <Box width="60%">
-          <form onSubmit={onSubmit}>
-            <Input
-              placeholder="Email"
-              variant="outlined"
-              fullWidth
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 1 }}
-            />
-            <Input
-              placeholder="Password"
-              variant="outlined"
-              fullWidth
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {errorMessage && (
-              <Typography level="inherit" color="danger" sx={{ mt: 2 }}>
-                {errorMessage}
-              </Typography>
-            )}
-            <Box display="flex" justifyContent="center">
-              <Button
-                type="submit"
-                variant="solid"
-                color="primary"
-                sx={{ width: '30%', mt: 4 }}
-              >
-                {isLoading ? <CircularProgress size="sm" /> : 'Sign in'}
-              </Button>
-            </Box>
-          </form>
+        <Box width="80%">
+          <Input
+            placeholder="Email"
+            variant="outlined"
+            fullWidth
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mb: 1 }}
+          />
+          <Input
+            placeholder="Password"
+            variant="outlined"
+            fullWidth
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {errorMessage && (
+            <Typography level="inherit" color="danger" sx={{ mt: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
+          <Box display="flex" justifyContent="center">
+            <Button
+              type="submit"
+              variant="solid"
+              color="primary"
+              sx={{ width: '50%', mt: 4 }}
+              disabled={isLoading}
+            >
+              {isLoading ? <CircularProgress size="sm" /> : 'Sign in'}
+            </Button>
+          </Box>
+          <Typography level="body2" sx={{ mt: 2, textAlign: 'center' }}>
+            Don’t have an account?{' '}
+            <Link href="/signup" passHref legacyBehavior>
+              <MUILink>Sign Up</MUILink>
+            </Link>
+          </Typography>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
-export default Login;
+export default LoginPage;
