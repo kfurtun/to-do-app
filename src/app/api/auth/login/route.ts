@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
   const db = await dbConnect();
   const userCollection = db.db(dbName).collection('users');
-  const user = await userCollection.findOne({ email });
+  const user = await userCollection.findOne({ email: email.toLowerCase() });
 
   if (!user) {
     return NextResponse.json(

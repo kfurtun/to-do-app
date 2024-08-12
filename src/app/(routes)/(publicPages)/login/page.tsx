@@ -1,7 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuthCheck from '@/app/hooks/useAuthCheck';
+import useSignOut from '@/app/hooks/useSignOut';
 import {
   Box,
   Button,
@@ -19,6 +20,12 @@ const errorMessages = {
 
 const LoginPage = () => {
   useAuthCheck();
+
+  // useEffect(() => {
+  //   const signOut = async () => await fetch('/api/auth/logout');
+
+  //   signOut();
+  // }, []);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -109,7 +116,7 @@ const LoginPage = () => {
               sx={{ width: '50%', mt: 4 }}
               disabled={isLoading}
             >
-              {isLoading ? <CircularProgress size="sm" /> : 'Sign in'}
+              {isLoading ? <CircularProgress size="sm" /> : 'Login'}
             </Button>
           </Box>
           <Typography level="body-sm" sx={{ mt: 2, textAlign: 'center' }}>
