@@ -68,7 +68,10 @@ const WeeklyDatePicker = ({}: WeeklyDatePickerProps) => {
         width="100%"
         spacing={1}
       >
-        <MonthButton setSelectedWeek={setSelectedWeek} />
+        <MonthButton
+          setSelectedWeek={setSelectedWeek}
+          setLeftButtonDisabled={setLeftButtonDisabled}
+        />
         <Stack
           direction="row"
           spacing={1}

@@ -7,16 +7,17 @@ import { Button, Stack } from '@mui/joy';
 import CalendarTodayOutlined from '@mui/icons-material/CalendarTodayOutlined';
 
 import useZustandStore from '@/app/lib/zustand/useZustandStore';
-import dayjs from 'dayjs';
-import { useLazyQuery } from '@apollo/client';
-import { GET_TASKS_BY_DATE } from '@/app/lib/apolloClient';
+import dayjs, { type Dayjs } from 'dayjs';
 
 interface MonthButtonProps {
   setSelectedWeek: (value: dayjs.Dayjs) => void;
+  setLeftButtonDisabled: (value: boolean) => void;
 }
 
-const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
-  const [getTasksByDate] = useLazyQuery(GET_TASKS_BY_DATE);
+const MonthButton = ({
+  setSelectedWeek,
+  setLeftButtonDisabled,
+}: MonthButtonProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const handleCalendarClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +30,17 @@ const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
 
   const openCalendar = Boolean(anchorEl);
   const popoverId = openCalendar ? 'simple-popover' : undefined;
+
+  const handleCalendarChange = async (newValue: Dayjs) => {
+    const startOfMonth = newValue.startOf('month');
+    setSelectedWeek(startOfMonth.startOf('week'));
+    setSelectedMonthAndYear(startOfMonth);
+    setAnchorEl(null);
+
+    if (startOfMonth.isAfter(dayjs(), 'day')) {
+      setLeftButtonDisabled(false);
+    }
+  };
 
   return (
     <Stack width="fit-content">
@@ -54,21 +66,7 @@ const MonthButton = ({ setSelectedWeek }: MonthButtonProps) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <MuiCalendar
             value={selectedMonthAndYear}
-            onChange={async (newValue) => {
-              await getTasksByDate({
-                variables: {
-                  dates: {
-                    startDate: newValue.startOf('month').format('YYYY-MM-DD'),
-                    endDate: newValue.endOf('month').format('YYYY-MM-DD'),
-                    todayDate: dayjs().format('YYYY-MM-DD'),
-                  },
-                },
-                fetchPolicy: 'cache-and-network',
-              });
-              setSelectedWeek(newValue.startOf('week'));
-              setSelectedMonthAndYear(newValue.startOf('month'));
-              setAnchorEl(null);
-            }}
+            onChange={(newValue) => handleCalendarChange(newValue)}
           />
         </LocalizationProvider>
       </Popover>
