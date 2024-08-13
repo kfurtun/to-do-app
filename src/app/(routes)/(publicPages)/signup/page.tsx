@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,15 +11,8 @@ import {
 } from '@mui/joy';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import useAuthCheck from '@/app/hooks/useAuthCheck';
 
 const SignupPage = () => {
-  //useAuthCheck();
-  // useEffect(() => {
-  //   const clearTokens = async () => await fetch('/api/auth/remove-tokens');
-
-  //   clearTokens();
-  // }, []);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
