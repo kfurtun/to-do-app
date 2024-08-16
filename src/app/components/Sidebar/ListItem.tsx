@@ -4,6 +4,7 @@ import ListItemMui from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/joy/Tooltip';
 
 interface Props {
   open: boolean;
@@ -20,7 +21,7 @@ const ListItem = ({
   isRoleDisabled = true,
   onClick,
 }: Props) => {
-  return (
+  const _listItem = (
     <ListItemMui disablePadding sx={{ display: 'block' }}>
       <ListItemButton
         sx={{
@@ -44,6 +45,14 @@ const ListItem = ({
         <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
       </ListItemButton>
     </ListItemMui>
+  );
+
+  return open ? (
+    _listItem
+  ) : (
+    <Tooltip title={text} placement="right">
+      {_listItem}
+    </Tooltip>
   );
 };
 

@@ -87,7 +87,7 @@ const HistoryPage = () => {
           </Box>
         );
       })}
-      {(!loading || dates?.length !== 0) && (
+      {!loading && dates?.length !== 0 && (
         <Button disabled={disabledShowMoreButton} onClick={handleShowMore}>
           Show more
         </Button>
